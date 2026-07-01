@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  web:
+    image: ghcr.io/nginx/nginx-unprivileged:alpine
+    container_name: pomodoro-timer
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./public:/usr/share/nginx/html
+    restart: unless-stopped
