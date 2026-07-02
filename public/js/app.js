@@ -1,19 +1,36 @@
-const TIMES = {
-    pomodoro: 3000,
-    shortBreak: 600,
-    longBreak: 1200
-}
-const state = {
-    mode: 'pomodoro',
-    timeLeft: TIMES.pomodoro,
-    isRunning: false
-};
+// app.js
 
+import { state, TIMES, updateTimerDisplay, changeBackground, titleTimer } from './controller.js';
+
+// --- Sounds & Setup ---
+const clickSound = new Audio('assets/click-sound.mp3');
+const alarmSound = new Audio('assets/alarm-sound.mp3');
 let timeInterval;
 
+// Initialize App
 updateTimerDisplay();
-console.log(state.timeLeft);
 
+
+const allButtons = document.querySelectorAll('button');
+allButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+        clickSound.currentTime = 0;
+        clickSound.play();
+    });
+});
+
+
+function switchMode(mode) {
+    clearInterval(timeInterval);
+    state.isRunning = false;
+    state.mode = mode;
+    state.timeLeft = TIMES[mode];
+    document.querySelector('#pause-button').textContent = 'Pause';
+    changeBackground();
+    updateTimerDisplay();
+}
+
+// --- Start / Pause / Reset Buttons ---
 const startButton = document.querySelector('#start-button');
 startButton.addEventListener('click', () => {
     if (state.isRunning === true) return;
@@ -25,9 +42,10 @@ startButton.addEventListener('click', () => {
             updateTimerDisplay();
         } else {
             clearInterval(timeInterval);
+            alarmSound.play();
         }
     }, 1000);
-})
+});
 
 const pauseButton = document.querySelector('#pause-button');
 pauseButton.addEventListener('click', () => {
@@ -49,10 +67,11 @@ pauseButton.addEventListener('click', () => {
                 updateTimerDisplay();
             } else {
                 clearInterval(timeInterval);
+                alarmSound.play();
             }
         }, 1000);
     }
-})
+});
 
 const resetButton = document.querySelector('#reset-button');
 resetButton.addEventListener('click', () => {
@@ -63,13 +82,11 @@ resetButton.addEventListener('click', () => {
     }
     state.timeLeft = TIMES[state.mode];
     updateTimerDisplay();
-})
-
-
-const pomodoroButton = document.querySelector('#pomodoro-button');
-pomodoroButton.addEventListener('click', () => {
-    switchMode('pomodoro');
 });
+
+// --- Mode Buttons ---
+const pomodoroButton = document.querySelector('#pomodoro-button');
+pomodoroButton.addEventListener('click', () => switchMode('pomodoro'));
 
 const shortBreakButton = document.querySelector('#short-break-button');
 shortBreakButton.addEventListener('click', () => {
@@ -83,6 +100,7 @@ longBreakButton.addEventListener('click', () => {
     document.title = titleTimer(state.timeLeft) + ' - Time for a long break';
 });
 
+// --- Settings Modal ---
 const settingButton = document.querySelector('#setting-button');
 const settingsModal = document.querySelector('#settings-modal');
 const saveSettingsButton = document.querySelector('#save-settings');
@@ -92,44 +110,37 @@ settingButton.addEventListener('click', () => {
 });
 
 saveSettingsButton.addEventListener('click', () => {
+    const newPomodoroTime = parseInt(document.querySelector('#pomodoro-input').value) || 50;
+    const newShortBreakTime = parseInt(document.querySelector('#short-break-input').value) || 5;
+    const newLongBreakTime = parseInt(document.querySelector('#long-break-input').value) || 15;
+
+    TIMES.pomodoro = newPomodoroTime * 60;
+    TIMES.shortBreak = newShortBreakTime * 60;
+    TIMES.longBreak = newLongBreakTime * 60;
+
+    const volumeLevel = parseFloat(document.querySelector('#alarm-volume-input').value);
+    alarmSound.volume = volumeLevel;
+    clickSound.volume = volumeLevel;
+
+    clearInterval(timeInterval);
+    state.isRunning = false;
+    pauseButton.textContent = 'Pause';
+    changeBackground();
+
+    state.timeLeft = TIMES[state.mode];
+    updateTimerDisplay();
     settingsModal.classList.add('hidden');
 });
 
-function titleTimer(timeLeft) {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-}
+const themeSwitcher = document.querySelectorAll('.color-circle');
 
-function updateTimerDisplay() {
-    const minutes = Math.floor(state.timeLeft / 60);
-    const seconds = state.timeLeft % 60;
+themeSwitcher.forEach((circle) => {
+    circle.addEventListener('click', () => {
+        themeSwitcher.forEach((circle) => circle.classList.remove('active-color'));
+        circle.classList.add('active-color');
 
-    const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    const timerDisplay = document.querySelector('#timer-display');
+        const chosenColor = circle.dataset.color;
 
-    timerDisplay.textContent = formattedTime;
-    document.title = formattedTime + ' - Time to focus';
-}
-
-function switchMode(mode) {
-    clearInterval(timeInterval);
-    state.isRunning = false;
-    state.mode = mode;
-    state.timeLeft = TIMES[mode];
-    pauseButton.textContent = 'Pause';
-    changeBackground();
-    updateTimerDisplay();
-}
-
-function changeBackground() {
-    if (state.isRunning === true) {
-        document.body.style.backgroundColor = 'black';
-        document.body.style.color = 'white';
-    } else {
-        document.body.style.backgroundColor = '';
-        document.body.style.color = '';
-    }
-}
-
-
+        document.documentElement.style.setProperty('--bg-color', chosenColor);
+    });
+});

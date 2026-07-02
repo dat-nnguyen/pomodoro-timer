@@ -29,13 +29,13 @@
 </main>
 
 <div id="settings-modal" class="hidden">
-    <div id="modal-content">
+    <div class="modal-content">
         <h2>Settings</h2>
 
         <div class="settings-group">
             <label>Pomodoro (minutes): <input type="number" id="pomodoro-input" min="1" max="999" value="50"></label>
-            <label>Short Break: <input type="number" id="short-break-input" min="1" max="999" value="5"></label>
-            <label>Long Break: <input type="number" id="long-break-input" min="1" max="999" value="15"></label>
+            <label>Short Break: <input type="number" id="short-break-input" min="1" max="999" value="10"></label>
+            <label>Long Break: <input type="number" id="long-break-input" min="1" max="999" value="20"></label>
 
             <div class="settings-group">
                 <label>Alarm Volume: <input type="range" id="alarm-volume-input" min="0" max="1" step="0.1" value="0.5"></label>
@@ -44,10 +44,19 @@
             <div class="settings-group">
                 <p>Theme Color: </p>
                 <div id="theme-color">
-                    <div class="color-circle active-color" data-color="#ffb38a" style="background: #ffb38a"></div>
-                    <div class="color-circle" data-color="#ff8a8a" style="background: #ff8a8a"></div>
-                    <div class="color-circle" data-color="#ff5a5a" style="background: #ff5a5a"></div>
-                    <div class="color-circle" data-color="#ff0000" style="background: #ff0000"></div>
+                    <div class="color-circle active-color" data-color="#FFD6C9" style="background: #FFD6C9"></div>
+                    <div class="color-circle" data-color="#FFCAD4" style="background: #FFCAD4"></div>
+                    <div class="color-circle" data-color="#F4B6C2" style="background: #F4B6C2"></div>
+                    <div class="color-circle" data-color="#E8AEB7" style="background: #E8AEB7"></div>
+
+                    <div class="color-circle" data-color="#D6E4FF" style="background: #D6E4FF"></div>
+                    <div class="color-circle" data-color="#BFD7FF" style="background: #BFD7FF"></div>
+                    <div class="color-circle" data-color="#A8C8FF" style="background: #A8C8FF"></div>
+                    <div class="color-circle" data-color="#B8E8FC" style="background: #B8E8FC"></div>
+
+                    <div class="color-circle" data-color="#CDECCF" style="background: #CDECCF"></div>
+                    <div class="color-circle" data-color="#D8F3DC" style="background: #D8F3DC"></div>
+                    <div class="color-circle" data-color="#E9F5C8" style="background: #E9F5C8"></div>
                 </div>
             </div>
         </div>
@@ -55,6 +64,6 @@
     </div>
 </div>
 
-<script src="js/app.js"></script>
+<script type="module" src="js/app.js"></script>
 </body>
 </html>
